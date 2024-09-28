@@ -1,70 +1,52 @@
-# Getting Started with Create React App
+Smart Scholar
+Smart Scholar is your one-stop solution for quick and smart tutoring, designed to help users extract questions from images and get step-by-step explanations or direct answers. Built for ShellHacks 2024 by Hayden Sandler, Thalia Castro, and Brandon Gerber, this application uses image-to-text conversion and AI-powered APIs to provide a seamless educational experience.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Features
+Image to Text Conversion: Upload an image containing a question or text, and the app extracts the text using the API Ninjas Image-to-Text API.
+AI-Powered Explanations: Get an explanation on how to approach the extracted question without giving away the answer, powered by OpenAI's GPT-3.5-turbo.
+AI-Powered Answers: Receive the correct answer along with an explanation on how it was derived.
+Technologies Used
+React: Front-end JavaScript framework for building a dynamic user interface.
+Axios: Promise-based HTTP client for making API requests.
+API Ninjas Image-to-Text API: Extracts text from images.
+OpenAI API: Provides detailed explanations and answers using GPT-3.5-turbo.
+Installation
+Clone this repository:
 
-## Available Scripts
+bash
+Copy code
+git clone https://github.com/yourusername/smart-scholar.git
+Navigate to the project directory:
 
-In the project directory, you can run:
+bash
+Copy code
+cd smart-scholar
+Install dependencies:
 
-### `npm start`
+bash
+Copy code
+npm install
+Create a .env file in the root of your project with the following environment variables:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+plaintext
+Copy code
+REACT_APP_NINJA_API_KEY=your_ninja_api_key
+REACT_APP_OPENAI_API_KEY=your_openai_api_key
+Run the app locally:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+bash
+Copy code
+npm start
+Usage
+Upload an image with a question.
+The app extracts the text from the image.
+You can choose to either:
+Get an Explanation: Provides an approach for solving the question.
+Get Answer and Explanation: Supplies the answer and explains how it was solved.
+Demo
+[Add a link to your demo or video walkthrough]
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Team
+Brandon Gerber
+Hayden Sandler
+Thalia Castro
