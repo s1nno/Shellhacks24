@@ -1,0 +1,321 @@
+import React, { useState } from "react";
+import axios from "axios";
+import "./App.css";
+
+function App() {
+  const [file, setFile] = useState(null);
+  const [text, setText] = useState("");
+  const [explanation, setExplanation] = useState("");
+  const [answerAndExplanation, setAnswerAndExplanation] = useState("");
+
+  const handleChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      const imageUrl = URL.createObjectURL(selectedFile);
+      setFile(imageUrl);
+
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+
+      const NINJA_API_KEY = "SECRET"; 
+      const API_URL = "SECRET"; 
+
+      axios
+        .post(API_URL, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Ocp-Apim-Subscription-Key": NINJA_API_KEY,
+          },
+        })
+        .then((response) => {
+          const textExtracted = response.data?.regions
+            ?.map(region => region.lines.map(line => line.words.map(word => word.text).join(" ")).join("\n"))
+            .join("\n") || "No text found in the image.";
+          setText(textExtracted);
+        })
+        .catch((error) => {
+          setText("Error: " + (error.response?.data?.message || "Failed to process the image."));
+        });
+    }
+  };
+
+  const getExplanation = async () => {
+    if (!text) {
+      setExplanation("Please extract text from an image first.");
+      return;
+    }
+
+    const OPENAI_API_KEY = "SECRET";
+    const API_URL = "SECRET";
+
+    const prompt = `Explain how to approach the following question without providing the answer, make sure you are approaching the question like a tutor that wants to point a student in the right way but not give the same answer: ${text}`;
+
+    try {
+      const response = await axios.post(
+        API_URL,
+        {
+          model: "gpt-3.5-turbo",
+          messages: [{ role: "user", content: prompt }],
+          max_tokens: 150,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${OPENAI_API_KEY}`,
+          },
+        }
+      );
+
+      const explanationText = response.data.choices[0]?.message?.content || "No explanation found.";
+      setExplanation(explanationText);
+    } catch (error) {
+      setExplanation("Error: Unable to fetch explanation.");
+    }
+  };
+
+  const getAnswerAndExplanation = async () => {
+    if (!text) {
+      setAnswerAndExplanation("Please extract text from an image first.");
+      return;
+    }
+
+    const OPENAI_API_KEY = "SECRET";
+    const API_URL = "SECRET";
+
+    const prompt = `Provide the answer to the following question and explain how you arrived at it, act like you are a teacher explaining it to a student, MAKE SURE ITS THE EXPLANATION FIRST THAN THE ANSWER AT THE BOTTOM, try to explain it best in max 2-3 sentences: ${text}`;
+
+    try {
+      const response = await axios.post(
+        API_URL,
+        {
+          model: "gpt-3.5-turbo",
+          messages: [{ role: "user", content: prompt }],
+          max_tokens: 150,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${OPENAI_API_KEY}`,
+          },
+        }
+      );
+
+      const answerAndExplanationText = response.data.choices[0]?.message?.content || "No answer found.";
+      setAnswerAndExplanation(answerAndExplanationText);
+    } catch (error) {
+      setAnswerAndExplanation("Error: Unable to fetch answer and explanation.");
+    }
+  };
+
+  return (
+    <div
+      className="App"
+      style={{
+        backgroundColor: "#E3F2FD",
+        color: "#333",
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "20px",
+      }}
+    >
+      <h1
+        style={{
+          fontSize: "48px",
+          marginBottom: "10px",
+          color: "#1565C0",
+          borderBottom: "4px solid #90CAF9",
+          paddingBottom: "10px",
+          textAlign: "center",
+        }}
+      >
+        Smart Scholar
+      </h1>
+      <h2 style={{ marginBottom: "20px", textAlign: "center", fontWeight: "normal" }}>
+        Your one-stop shop for quick and smart tutoring!
+      </h2>
+      <h4 style={{ marginBottom: "40px", textAlign: "center", fontWeight: "normal" }}>
+        Built by Hayden Sandler, Thalia Castro, and Brandon Gerber
+      </h4>
+
+      <div
+        style={{
+          backgroundColor: "#BBDEFB",
+          border: "1px solid #90CAF9",
+          borderRadius: "12px",
+          padding: "40px",
+          width: "90%",
+          maxWidth: "1200px",
+          display: "flex",
+          justifyContent: "center",
+          boxShadow: "0 6px 12px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <div style={{ flex: "1", marginRight: "20px" }}>
+          <h2 style={{ color: "#1565C0", marginBottom: "20px", fontWeight: "bold" }}>
+            Add Image:
+          </h2>
+
+          <label
+            style={{
+              backgroundColor: "#1565C0",
+              color: "#fff",
+              padding: "15px 30px",
+              borderRadius: "8px",
+              cursor: "pointer",
+              display: "inline-block",
+              fontSize: "16px",
+            }}
+          >
+            Choose File
+            <input
+              type="file"
+              onChange={handleChange}
+              style={{ display: "none" }}
+            />
+          </label>
+
+          <h3
+            style={{
+              marginTop: "30px",
+              color: "#1565C0",
+              fontWeight: "bold",
+            }}
+          >
+            Extracted Text (Editable if needed):
+          </h3>
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            style={{
+              backgroundColor: "#E1F5FE",
+              border: "1px solid #90CAF9",
+              padding: "20px",
+              borderRadius: "8px",
+              minHeight: "100px",
+              color: "#333",
+              overflowY: "auto",
+              maxHeight: "300px",
+              width: "100%",
+              whiteSpace: "pre-wrap",
+              wordWrap: "break-word",
+            }}
+          />
+
+          {file && (
+            <div style={{ marginTop: "20px", textAlign: "center" }}>
+              <h3 style={{ color: "#1565C0", marginBottom: "10px", fontWeight: "bold" }}>Image Preview:</h3>
+              <img
+                src={file}
+                alt="Uploaded preview"
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "250px",
+                  borderRadius: "10px",
+                  border: "1px solid #90CAF9",
+                  display: "block",
+                  margin: "0 auto",
+                }}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "space-between", width: "90%", maxWidth: "1200px", marginTop: "20px" }}>
+        <div style={{ flex: "1", marginRight: "10px" }}>
+          <button
+            onClick={getExplanation}
+            disabled={!text}
+            style={{
+              backgroundColor: "#1565C0",
+              color: "#fff",
+              padding: "10px 20px",
+              margin: "20px 0",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontSize: "16px",
+              width: "100%",
+            }}
+          >
+            Get Explanation
+          </button>
+
+          <h3
+            style={{
+              marginTop: "20px",
+              color: "#1565C0",
+              fontWeight: "bold",
+            }}
+          >
+            Explanation:
+          </h3>
+          <div
+            style={{
+              backgroundColor: "#E1F5FE",
+              border: "1px solid #90CAF9",
+              padding: "20px",
+              borderRadius: "8px",
+              minHeight: "100px",
+              color: "#333",
+              overflowY: "auto",
+              maxHeight: "300px",
+            }}
+          >
+            <p style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
+              {explanation}
+            </p>
+          </div>
+        </div>
+
+        <div style={{ flex: "1", marginLeft: "10px" }}>
+          <button
+            onClick={getAnswerAndExplanation}
+            disabled={!text}
+            style={{
+              backgroundColor: "#1565C0",
+              color: "#fff",
+              padding: "10px 20px",
+              margin: "20px 0",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontSize: "16px",
+              width: "100%",
+            }}
+          >
+            Get Answer and Explanation
+          </button>
+
+          <h3
+            style={{
+              marginTop: "20px",
+              color: "#1565C0",
+              fontWeight: "bold",
+            }}
+          >
+            Answer and Explanation:
+          </h3>
+          <div
+            style={{
+              backgroundColor: "#E1F5FE",
+              border: "1px solid #90CAF9",
+              padding: "20px",
+              borderRadius: "8px",
+              minHeight: "100px",
+              color: "#333",
+              overflowY: "auto",
+              maxHeight: "300px",
+            }}
+          >
+            <p style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
+              {answerAndExplanation}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;
