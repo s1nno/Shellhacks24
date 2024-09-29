@@ -1,3 +1,7 @@
+
+//   THIS ONE HAS SECRET INSTEAD OF API KEYS IT WILL NOT RUN AS INTENDED, WE HAVE THE WORKING CODE ON OUR VSC!
+
+
 import React, { useState } from "react";
 import axios from "axios";
 import "./App.css";
